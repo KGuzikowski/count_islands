@@ -1,15 +1,16 @@
+import sys
 from queue import PriorityQueue
+
+import numpy as np
 
 from utils import create_map, create_visited_matrix, get_matrix_size, get_neighbours
 
-if __name__ == "__main__":
-    x, y = get_matrix_size("map.txt")
-    world_map = create_map("map.txt", x, y)
-    visited = create_visited_matrix(x, y)
+
+# BFS based method
+def count_islands(x: int, y: int, world_map: np.memmap, visited: np.memmap) -> int:
     islands_no = 0
     walking_on_island = False
 
-    # BFS based method
     q = PriorityQueue()
     q.put((-int(world_map[0][0]), (0, 0)))
 
@@ -36,5 +37,19 @@ if __name__ == "__main__":
             i, j = neighbour
             if not visited[i][j]:
                 q.put((-int(world_map[i][j]), (i, j)))
+
+    return islands_no
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2 or not sys.argv[1] or not sys.argv[1].endswith(".txt"):
+        print("You should provide a correct file name as a input to the program!")
+        sys.exit(0)
+
+    file_name = sys.argv[1]
+    y, x = get_matrix_size(file_name)
+    world_map = create_map(file_name, x, y)
+    visited = create_visited_matrix(x, y)
+    islands_no = count_islands(x, y, world_map, visited)
 
     print(islands_no)
